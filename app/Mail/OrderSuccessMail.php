@@ -14,6 +14,6 @@ class OrderSuccessMail extends Mailable
     public function build()
     {
         return $this->subject('Xác nhận đặt hàng thành công!')
-                    ->view('laptop.success_order');
+                    ->view('laptop.success_order',["mailData"=>$this->data]);
     }
 }

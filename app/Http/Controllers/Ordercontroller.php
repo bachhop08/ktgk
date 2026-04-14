@@ -12,22 +12,76 @@ class OrderController extends Controller
 {
     public function order()
     {
-        // ... code của hàm order
+        $categories = DB::table('danh_muc_laptop')->get();
+        $cart = session('cart', []);
+        
+        if (!empty($cart)) {
+            $data = DB::table('san_pham')->whereIn('id', array_keys($cart))->get();
+            $quantity = $cart;
+        } else {
+            $data = collect();
+            $quantity = [];
+        }
+        return view('laptop.order', [
+            'data' => $data,
+            'quantity' => $quantity,
+            'categories' => $categories,
+            'title' => 'Giỏ hàng'
+        ]);
     }
-
     public function cartdelete(Request $request)
     {
-        // ... code của hàm cartdelete
+        $cart = session('cart', []);
+        if (isset($cart[$request->id])) {
+            unset($cart[$request->id]);
+            session(['cart' => $cart]);
+        }
+        return redirect()->back()->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng.');
     }
-
     public function ordercreate(Request $request)
     {
-        // ... code của hàm ordercreate
+        $cart = session('cart', []);
+        if (empty($cart)) {
+            return redirect('/')->with('error', 'Giỏ hàng của bạn đang trống.');
+        }
+        $orderId = DB::table('don_hang')->insertGetId([
+            'user_id' => Auth::id(),
+            'ngay_dat_hang' => now(),
+            'hinh_thuc_thanh_toan' => $request->hinh_thuc_thanh_toan,
+            'tinh_trang' => 1 
+        ]);
+        $mailData = []; 
+        foreach ($cart as $id => $qty) {
+            $laptop = DB::table('san_pham')->where('id', $id)->first();
+            $so_luong_thuc_te = is_array($qty) ? ($qty['quantity'] ?? $qty['so_luong'] ?? 1) : $qty;
+
+            if ($laptop) {
+                DB::table('chi_tiet_don_hang')->insert([
+                    'ma_don_hang' => $orderId,
+                    'laptop_id'   => $id,
+                    'so_luong'    => $so_luong_thuc_te, 
+                    'don_gia'     => $laptop->gia
+                ]);
+            
+                $mailData[] = [
+                    'ten_laptop' => $laptop->tieu_de, 
+                    'so_luong'   => $so_luong_thuc_te,
+                    'don_gia'    => $laptop->gia
+                ];
+            }
+        }
+        
+        try {
+            Mail::to(Auth::user()->email)->send(new OrderSuccessMail($mailData));
+        } catch (\Exception $e) {
+            
+        }
+       
+        session()->forget('cart');
+        return redirect()->route('order')->with('success', 'Đặt hàng thành công! Một email xác nhận đã được gửi đến bạn. Mã đơn hàng: #' . $orderId);
     }
 
-    // ==========================================
-    // DÁN HÀM TEST MAIL VÀO ĐÂY (BÊN TRONG CLASS)
-    // ==========================================
+
     public function testMail()
     {
         $mailData = [
@@ -48,4 +102,4 @@ class OrderController extends Controller
         }
     }
 
-} // <--- DẤU NGOẶC NHỌN NÀY LÀ KẾT THÚC CỦA CLASS, HÀM TEST MAIL PHẢI NẰM TRÊN NÓ
+}
