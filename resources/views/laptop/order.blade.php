@@ -74,7 +74,7 @@
                             </select>
                         </div>
                         @auth
-                            <button type="submit" class="btn btn-primary btn-block">XÁC NHẬN ĐẶT HÀNG</button>
+                            <button type="submit" class="btn btn-primary btn-block">ĐẶT HÀNG</button>
                         @else
                             <div class="alert alert-warning text-center">Vui lòng <a href="{{ route('login') }}">Đăng nhập</a> để đặt hàng</div>
                         @endauth
