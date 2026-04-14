@@ -40,7 +40,7 @@
     </div>
 
     <style>
-        /* CSS để chia 5 cột đều nhau trên màn hình máy tính */
+       
         @media (min-width: 992px) {
             .col-custom {
                 flex: 0 0 20%;
@@ -48,7 +48,7 @@
                 padding: 10px;
             }
         }
-        /* Màn hình nhỏ hơn (máy tính bảng) hiện 3 cột */
+      
         @media (max-width: 991px) {
             .col-custom {
                 flex: 0 0 33.333%;
