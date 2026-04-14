@@ -29,7 +29,8 @@
                 @php $tongTien = 0; @endphp
                 @forelse($data as $key => $item)
                     @php 
-                        $qty = $quantity[$item->id];
+                        $cartItem = $quantity[$item->id];
+                        $qty = is_array($cartItem) ? ($cartItem['quantity'] ?? 1) : $cartItem;
                         $thanhTien = $item->gia * $qty;
                         $tongTien += $thanhTien;
                     @endphp

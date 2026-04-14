@@ -29,3 +29,6 @@ Route::post('/cart/delete', [OrderController::class, 'cartdelete'])->name('cartd
 Route::post('/order/create', [OrderController::class, 'ordercreate'])
     ->middleware('auth')
     ->name('ordercreate');
+
+
+    Route::get('/test-mail', [OrderController::class, 'testMail']);
