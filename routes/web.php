@@ -1,12 +1,15 @@
 <?php
 
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Ordercontroller; // BẮT BUỘC PHẢI CÓ
 
 Route::get('/', [HomeController::class, 'index']);
 
-require __DIR__.'/auth.php';
+Route::get('/gio-hang', [OrderController::class, 'order'])->name('order');
+Route::post('/cart/delete', [OrderController::class, 'cartdelete'])->name('cartdelete');
+Route::post('/order/create', [OrderController::class, 'ordercreate'])
+    ->middleware('auth')
+    ->name('ordercreate');
 
-Route::get('/gio-hang', 'App\Http\Controllers\Ordercontroller@order')->name('order');
-Route::post('/cart/delete', 'App\Http\Controllers\Ordercontroller@cartdelete')->name('cartdelete');
-Route::post('/order/create', 'App\Http\Controllers\Ordercontroller@ordercreate')->middleware('auth')->name('ordercreate');
+require __DIR__.'/auth.php';

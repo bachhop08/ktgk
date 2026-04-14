@@ -22,6 +22,7 @@
                     <th>Tên Laptop</th>
                     <th>Số lượng</th>
                     <th>Đơn giá</th>
+                     <th>Thành tiền</th>
                     <th>Xoá</th>
                 </tr>
             </thead>
