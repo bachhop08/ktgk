@@ -3,33 +3,63 @@
         {{ $title }}
     </x-slot>
 
-    <div class="mt-3 mb-3 d-flex justify-content-center align-items-center">
-    <span class="mr-3" style="font-weight: bold;">Tìm kiếm theo:</span>
-
-    <a href="{{ request()->fullUrlWithQuery(['sort' => 'asc']) }}" class="btn btn-sm btn-outline-secondary mr-2">
-        Giá tăng dần
-    </a>
-
-    <a href="{{ request()->fullUrlWithQuery(['sort' => 'desc']) }}" class="btn btn-sm btn-outline-secondary">
-        Giá giảm dần
-    </a>
-</div>
-
-    <div class="list-laptop">
-        @foreach($laptops as $item)
-            <div class="laptop">
-                <a href="{{ route('laptop.detail', $item->id) }}">
-                    <img src="{{ asset('storage/app/public/image/' . $item->hinh_anh) }}" alt="{{ $item->ten }}" style="width:100%; height: 150px; object-fit: contain; padding: 5px;">
-                    <div class="laptop-info p-2 text-left">
-                        <div style="font-weight:bold; color: #122333; font-size: 13px; height: 34px; overflow: hidden;">
-                            {{ $item->ten }}
-                        </div>
-                        <div style="color: #d9534f; font-weight: bold; font-size: 14px; margin-top: 5px;">
-                            <i style="font-style: italic;">{{ number_format($item->gia) }} đ</i>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        @endforeach
+    <div class="mt-4 mb-4 d-flex justify-content-center align-items-center">
+        <span class="mr-3" style="font-weight: bold; color: #122333;">Tìm kiếm theo:</span>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'asc']) }}" class="btn btn-sm btn-outline-secondary mr-2">
+            Giá tăng dần
+        </a>
+        <a href="{{ request()->fullUrlWithQuery(['sort' => 'desc']) }}" class="btn btn-sm btn-outline-secondary">
+            Giá giảm dần
+        </a>
     </div>
+
+    <div class="container-fluid">
+        <div class="row px-4">
+            @foreach($laptops as $item)
+                <div class="col-custom mb-4">
+                    <div class="card h-100 shadow-sm border text-center p-2" style="border-radius: 8px;">
+                        <a href="{{ route('laptop.detail', $item->id) }}" class="text-decoration-none">
+                            <img src="{{ asset('storage/image/' . $item->hinh_anh) }}" 
+                                 alt="{{ $item->ten }}" 
+                                 style="height: 150px; width: 100%; object-fit: contain;"
+                                 onerror="this.src='{{ asset('image/no-image.png') }}'">
+                            
+                            <div class="card-body p-1">
+                                <div style="font-weight:bold; color: #122333; font-size: 13px; height: 38px; overflow: hidden; line-height: 1.3;">
+                                    {{ $item->ten }}
+                                </div>
+                                <div style="color: #d9534f; font-weight: bold; font-size: 15px; margin-top: 10px;">
+                                    <i style="font-style: italic;">{{ number_format($item->gia) }} VNĐ</i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <style>
+        /* CSS để chia 5 cột đều nhau trên màn hình máy tính */
+        @media (min-width: 992px) {
+            .col-custom {
+                flex: 0 0 20%;
+                max-width: 20%;
+                padding: 10px;
+            }
+        }
+        /* Màn hình nhỏ hơn (máy tính bảng) hiện 3 cột */
+        @media (max-width: 991px) {
+            .col-custom {
+                flex: 0 0 33.333%;
+                max-width: 33.333%;
+                padding: 10px;
+            }
+        }
+        .card:hover {
+            border-color: #007bff;
+            transform: scale(1.02);
+            transition: 0.3s;
+        }
+    </style>
 </x-laptop-layout>
