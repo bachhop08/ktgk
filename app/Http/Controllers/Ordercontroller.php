@@ -16,7 +16,7 @@ class OrderController extends Controller
         $cart = session('cart', []);
         
         if (!empty($cart)) {
-            $data = DB::table('laptop')->whereIn('id', array_keys($cart))->get();
+            $data = DB::table('san_pham')->whereIn('id', array_keys($cart))->get();
             $quantity = $cart;
         } else {
             $data = collect();
@@ -48,35 +48,34 @@ class OrderController extends Controller
             'user_id' => Auth::id(),
             'ngay_dat_hang' => now(),
             'hinh_thuc_thanh_toan' => $request->hinh_thuc_thanh_toan,
-            'tinh_trang' => 1 // Trạng thái: Mới đặt
+            'tinh_trang' => 1 
         ]);
         $mailData = []; 
-        // 2. Lưu chi tiết đơn hàng
         foreach ($cart as $id => $qty) {
-            $laptop = DB::table('laptop')->where('id', $id)->first();
+            $laptop = DB::table('san_pham')->where('id', $id)->first();
+            $so_luong_thuc_te = is_array($qty) ? ($qty['quantity'] ?? $qty['so_luong'] ?? 1) : $qty;
+
             if ($laptop) {
                 DB::table('chi_tiet_don_hang')->insert([
                     'ma_don_hang' => $orderId,
                     'laptop_id'   => $id,
-                    'so_luong'    => $qty,
+                    'so_luong'    => $so_luong_thuc_te, 
                     'don_gia'     => $laptop->gia
                 ]);
-                // Thu thập dữ liệu để gửi mail
+            
                 $mailData[] = [
-                    'ten_laptop' => $laptop->ten,
-                    'so_luong'   => $qty,
+                    'ten_laptop' => $laptop->tieu_de, 
+                    'so_luong'   => $so_luong_thuc_te,
                     'don_gia'    => $laptop->gia
                 ];
             }
         }
-        // 3. Gửi email xác nhận
         try {
             Mail::to(Auth::user()->email)->send(new OrderSuccessMail($mailData));
         } catch (\Exception $e) {
-            // Nếu lỗi gửi mail thì vẫn tiếp tục để không làm gián đoạn trải nghiệm khách hàng
-            // \Log::error("Lỗi gửi mail: " . $e->getMessage());
+            
         }
-        // 4. Xóa giỏ hàng
+       
         session()->forget('cart');
         return redirect()->route('order')->with('success', 'Đặt hàng thành công! Một email xác nhận đã được gửi đến bạn. Mã đơn hàng: #' . $orderId);
     }
