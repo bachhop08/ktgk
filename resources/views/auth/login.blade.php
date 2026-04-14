@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="flex justify-center mb-6 mt-4">
+        <a href="/">
+            <img src="/images/logo-hub.jpg" alt="MIS HUB Logo" class="w-32 h-auto" />
+        </a>
+    </div>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

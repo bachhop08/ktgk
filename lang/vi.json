@@ -1,0 +1,11 @@
+{
+    "Name" : "Họ tên",
+    "Email" : "Email",
+    "Password" : "Mật khẩu",
+    "Confirm Password" : "Xác nhận lại mật khẩu",
+    "Already registered?": "Bạn đã có tài khoản?",
+    "Register": "Đăng ký",
+    "Log in": "Đăng nhập",
+    "Remember me": "Ghi nhớ đăng nhập",
+    "Forgot your password?": "Quên mật khẩu?"
+}
