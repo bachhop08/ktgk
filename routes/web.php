@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\LaptopController7;
+use App\Http\Controllers\Controller2;
+use App\Http\Controllers\Controller3;
+use App\Http\Controllers\OrderController;
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -10,22 +12,20 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-
-use App\Http\Controllers\LaptopController7;
 Route::get('/quanly', [LaptopController7::class, 'quanly']);
 Route::delete('/quanly/xoa/{id}', [LaptopController7::class, 'destroy']);
 
-use App\Http\Controllers\controller2;
+Route::get('/', [Controller2::class, 'index']);
+Route::get('/laptop/theloai/{id_danh_muc}', [Controller2::class, 'index']);
 
+Route::get('/laptop/chitiet/{id}', [Controller3::class, 'show'])->name('laptop.detail');
 
-Route::get('/', [controller2::class, 'index']);
-Route::get('/laptop/theloai/{id_danh_muc}', [controller2::class, 'index']);
+Route::post('/them-gio-hang', [Controller3::class, 'addToCart'])->name('cart.add');
 
+Route::get('/gio-hang', [OrderController::class, 'order'])->name('order');
 
+Route::post('/cart/delete', [OrderController::class, 'cartdelete'])->name('cartdelete');
 
-use App\Http\Controllers\controller3;
-
-Route::get('/laptop/chitiet/{id}', [controller3::class, 'show'])->name('laptop.detail');
-
-
-Route::post('/them-gio-hang', [controller3::class, 'addToCart'])->name('cart.add');
+Route::post('/order/create', [OrderController::class, 'ordercreate'])
+    ->middleware('auth')
+    ->name('ordercreate');
