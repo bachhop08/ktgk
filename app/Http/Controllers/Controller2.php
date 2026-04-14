@@ -20,7 +20,7 @@ class controller2 extends Controller
             $query->where('id_danh_muc', $id_danh_muc);
             $title = "Thương hiệu " . DB::table('danh_muc_laptop')->where('id', $id_danh_muc)->value('ten_danh_muc');
         } else {
-            $query->limit(20);
+            // ĐÃ XÓA dòng $query->limit(20); ở đây vì hàm paginate ở dưới sẽ tự lo việc giới hạn 20 sản phẩm/trang.
             $title = "Trang chủ Laptop";
         }
 
@@ -29,7 +29,8 @@ class controller2 extends Controller
             $query->orderBy('gia', $request->sort == 'asc' ? 'asc' : 'desc');
         }
 
-        $laptops = $query->get();
+        // 4. ĐÃ SỬA: Thay thế get() bằng paginate(20)
+        $laptops = $query->paginate(20);
 
         // Trả về view theo chuẩn layout (biến categories truyền vào để header lặp)
         return view('laptop.index', compact('laptops', 'categories', 'title', 'id_danh_muc'));
@@ -43,7 +44,7 @@ class controller2 extends Controller
 
         if (!$laptop) abort(404);
 
-        $title = $laptop->ten;
+        $title = $laptop->ten; // (Lưu ý nhỏ: Nếu cột trong DB của bạn tên là tieu_de thì nhớ sửa thành $laptop->tieu_de nhé)
 
         return view('laptop.detail', compact('laptop', 'categories', 'title'));
     }

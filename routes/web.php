@@ -1,5 +1,8 @@
 <?php
 
+// 1. Gộp tất cả thư viện (use) của cả 2 người lên đầu
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LaptopController5;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LaptopController7;
 use App\Http\Controllers\Controller2;
@@ -12,6 +15,9 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
+// ==========================================
+// 2. CÁC ROUTE CỦA BẠN (NHÁNH HIỆN TẠI)
+// ==========================================
 Route::get('/quanly', [LaptopController7::class, 'quanly']);
 Route::delete('/quanly/xoa/{id}', [LaptopController7::class, 'destroy']);
 
@@ -30,5 +36,16 @@ Route::post('/order/create', [OrderController::class, 'ordercreate'])
     ->middleware('auth')
     ->name('ordercreate');
 
+Route::get('/test-mail', [OrderController::class, 'testMail']);
 
-    Route::get('/test-mail', [OrderController::class, 'testMail']);
+
+// ==========================================
+// 3. CÁC ROUTE CỦA THU HOÀI (NHÁNH origin/thuhoai)
+// ==========================================
+// Route cho Profile
+Route::get('/profile', function () {
+    return view('profile'); 
+})->name('account'); 
+
+// Route tìm kiếm - Sửa đường dẫn cho chuẩn
+Route::post('/timkiem', [LaptopController5::class, 'search'])->name('laptop.search');
